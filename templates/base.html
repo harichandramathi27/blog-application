@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TechInsight Pro - Professional Blog Platform{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="brand">
+                    <h1><a href="{{ url_for('admin_dashboard') if current_user and current_user.is_admin else url_for('blog') if current_user else url_for('login') }}">
+                        <i class="fas fa-brain"></i>
+                        TechInsight Pro
+                    </a></h1>
+                    <span class="tagline">Professional Insights & Innovation</span>
+                </div>
+                
+                <div class="nav-menu">
+                    {% if current_user %}
+                        <div class="nav-links">
+                            {% if current_user.is_admin %}
+                                <a href="{{ url_for('admin_dashboard') }}" class="nav-link">
+                                    <i class="fas fa-tachometer-alt"></i> Dashboard
+                                </a>
+                            {% else %}
+                                <a href="{{ url_for('blog') }}" class="nav-link">
+                                    <i class="fas fa-home"></i> Home
+                                </a>
+                                <a href="{{ url_for('new_post') }}" class="nav-link">
+                                    <i class="fas fa-plus"></i> Write
+                                </a>
+                            {% endif %}
+                            <a href="{{ url_for('admin_profile') if current_user.is_admin else url_for('profile') }}" class="nav-link">
+                                <i class="fas fa-user"></i> {{ 'Admin Profile' if current_user.is_admin else 'Profile' }}
+                            </a>
+                        </div>
+                        
+                        <div class="user-menu">
+                            <div class="user-info">
+                                <div class="user-avatar">
+                                    <i class="{{ current_user.avatar or 'fas fa-user' }}"></i>
+                                </div>
+                                <div class="user-details">
+                                    <span class="username">{{ current_user.username }}</span>
+                                    <span class="user-role">{{ 'Administrator' if current_user.is_admin else 'Author' }}</span>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('admin_logout') if current_user and current_user.is_admin else url_for('user_logout') }}" class="btn btn-outline">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="auth-links">
+                            <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
+                            <a href="{{ url_for('register') }}" class="btn btn-outline">Register</a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' if category == 'error' else 'info-circle' }}"></i>
+                            {{ message }}
+                            <button class="flash-close" onclick="this.parentElement.remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3><i class="fas fa-brain"></i> TechInsight Pro</h3>
+                <p>Empowering professionals with cutting-edge insights and innovative solutions.</p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Platform</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">API</a></li>
+                    <li><a href="#">Support</a></li>
+                    <li><a href="#">Community</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TechInsight Pro. All rights reserved. Built with Flask & Python.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Auto-hide flash messages
+        setTimeout(function() {
+            const flashMessages = document.querySelectorAll('.flash-message');
+            flashMessages.forEach(function(message) {
+                message.style.opacity = '0';
+                message.style.transform = 'translateY(-20px)';
+                setTimeout(function() {
+                    message.remove();
+                }, 300);
+            });
+        }, 5000);
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.classList.toggle('active');
+        }
+    </script>
+</body>
+</html>

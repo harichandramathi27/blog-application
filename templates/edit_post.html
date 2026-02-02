@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Post - My Blog{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2>Edit Post</h2>
+    
+    <form method="POST" class="post-form">
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" id="title" name="title" value="{{ post.title }}" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="category">Category:</label>
+            <select id="category" name="category" required>
+                <option value="">Select a category</option>
+                {% for category in categories %}
+                    <option value="{{ category.slug }}" {% if post.category == category.slug %}selected{% endif %}>
+                        {{ category.name }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="tags">Tags (comma-separated):</label>
+            <input type="text" id="tags" name="tags" value="{{ post.tags|join(', ') }}" placeholder="e.g. technology, programming, web">
+        </div>
+        
+        <div class="form-group">
+            <label for="content">Content:</label>
+            <textarea id="content" name="content" rows="15" required>{{ post.content }}</textarea>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Update Post</button>
+            <a href="{{ url_for('post_detail', post_id=post.id) }}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

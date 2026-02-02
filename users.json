@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@blog.com",
+    "password": "pbkdf2:sha256:600000$kBIYR9h8516oYUkD$13b88625a322e4851805a1d5daa8ed5940ab8aeb3e337a77190fcbd31586b9af",
+    "is_admin": true,
+    "created_at": "2026-01-26 11:55:28",
+    "bio": "Platform Administrator",
+    "avatar": "fas fa-user-shield",
+    "last_login": "2026-02-02 23:17:31"
+  },
+  {
+    "id": 2,
+    "username": "hari",
+    "email": "hari@gmail.com",
+    "password": "pbkdf2:sha256:600000$ukzftmuXkU6V8riq$977d22e4cf8583659d4487ba0eced87c2b56a58f5de2f2c12508261aba9812aa",
+    "is_admin": false,
+    "created_at": "2026-02-02 23:03:50",
+    "bio": "",
+    "avatar": "fas fa-user",
+    "last_login": "2026-02-02 23:31:32"
+  }
+]

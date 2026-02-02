@@ -1,0 +1,259 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TechInsight Pro{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="hero-content">
+        <h1 class="hero-title">
+            {% if current_user.is_admin %}
+                Admin View - TechInsight Pro
+            {% else %}
+                Welcome back, {{ current_user.username }}!
+            {% endif %}
+        </h1>
+        <p class="hero-subtitle">
+            {% if current_user.is_admin %}
+                Administrative overview of the platform with full management capabilities.
+            {% else %}
+                Discover cutting-edge insights, innovative solutions, and professional expertise in technology and business.
+            {% endif %}
+        </p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <span class="stat-number">{{ posts|length }}</span>
+                <span class="stat-label">Articles</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ categories|length }}</span>
+                <span class="stat-label">Categories</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">{{ all_tags|length }}</span>
+                <span class="stat-label">Topics</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Search and Filter Section -->
+<div class="search-section">
+    <div class="container">
+        <form method="GET" class="search-form">
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="search" placeholder="Search articles, insights, and solutions..." value="{{ search }}" class="search-input">
+                </div>
+                <button type="submit" class="search-btn">
+                    <i class="fas fa-search"></i>
+                    <span>Search</span>
+                </button>
+            </div>
+            
+            <div class="filter-container">
+                <div class="filter-group">
+                    <label for="category">Category</label>
+                    <select name="category" id="category" class="filter-select">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.slug }}" {% if selected_category == category.slug %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="tag">Topic</label>
+                    <select name="tag" id="tag" class="filter-select">
+                        <option value="">All Topics</option>
+                        {% for tag in all_tags %}
+                            <option value="{{ tag }}" {% if selected_tag == tag %}selected{% endif %}>
+                                {{ tag }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="filter-group">
+                    <label for="sort">Sort By</label>
+                    <select name="sort" id="sort" class="filter-select">
+                        <option value="newest" {% if sort_by == 'newest' %}selected{% endif %}>Newest First</option>
+                        <option value="oldest" {% if sort_by == 'oldest' %}selected{% endif %}>Oldest First</option>
+                        <option value="popular" {% if sort_by == 'popular' %}selected{% endif %}>Most Popular</option>
+                        <option value="trending" {% if sort_by == 'trending' %}selected{% endif %}>Trending</option>
+                    </select>
+                </div>
+                
+                <div class="filter-actions">
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                    {% if search or selected_category or selected_tag or sort_by != 'newest' %}
+                        <a href="{{ url_for('blog') }}" class="btn btn-outline">Clear All</a>
+                    {% endif %}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="content-section">
+    <div class="container">
+        <div class="content-layout">
+            <div class="main-content-area">
+                {% if posts %}
+                    <div class="section-header">
+                        <h2>Latest Insights</h2>
+                        <p>Stay ahead with our latest articles and professional insights</p>
+                    </div>
+                    
+                    <div class="posts-grid">
+                        {% for post in posts %}
+                        <article class="post-card">
+                            <div class="post-header">
+                                <div class="post-meta">
+                                    {% if post.category %}
+                                        <span class="category-badge category-{{ post.category }}">
+                                            <i class="fas fa-tag"></i>
+                                            {{ post.category|title }}
+                                        </span>
+                                    {% endif %}
+                                    <span class="post-date">
+                                        <i class="fas fa-calendar"></i>
+                                        {{ post.date or 'Unknown date' }}
+                                    </span>
+                                </div>
+                                
+                                {% if current_user and (not post.author_id or current_user.id == post.author_id or current_user.is_admin) %}
+                                    <div class="post-actions">
+                                        <a href="{{ url_for('edit_post', post_id=post.id) }}" class="action-btn edit-btn" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{{ url_for('delete_post', post_id=post.id) }}" 
+                                           class="action-btn delete-btn" 
+                                           title="Delete"
+                                           onclick="return confirm('Are you sure you want to delete this article?')">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="post-content">
+                                <h3 class="post-title">
+                                    <a href="{{ url_for('post_detail', post_id=post.id) }}">{{ post.title }}</a>
+                                </h3>
+                                
+                                <p class="post-excerpt">{{ post.content[:200] }}{% if post.content|length > 200 %}...{% endif %}</p>
+                                
+                                {% if post.tags %}
+                                    <div class="post-tags">
+                                        {% for tag in post.tags[:3] %}
+                                            <span class="tag">{{ tag }}</span>
+                                        {% endfor %}
+                                        {% if post.tags|length > 3 %}
+                                            <span class="tag-more">+{{ post.tags|length - 3 }} more</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="post-footer">
+                                <a href="{{ url_for('post_detail', post_id=post.id) }}" class="read-more">
+                                    Read Full Article
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                                <div class="post-stats">
+                                    <span class="stat">
+                                        <i class="fas fa-eye"></i>
+                                        {{ post.views or 0 }}
+                                    </span>
+                                    <span class="stat">
+                                        <i class="fas fa-clock"></i>
+                                        {{ post.reading_time or 1 }} min
+                                    </span>
+                                </div>
+                            </div>
+                        </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>No Articles Found</h3>
+                        {% if search or selected_category or selected_tag %}
+                            <p>We couldn't find any articles matching your criteria. Try adjusting your search or <a href="{{ url_for('blog') }}">browse all articles</a>.</p>
+                        {% else %}
+                            <p>Be the first to share your insights! <a href="{{ url_for('new_post') }}">Create your first article</a>.</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                <!-- Pagination -->
+                {% if total_pages > 1 %}
+                <div class="pagination">
+                    {% if current_page > 1 %}
+                        <a href="{{ url_for('blog', page=current_page-1, search=search, category=selected_category, tag=selected_tag, sort=sort_by) }}" 
+                           class="pagination-btn pagination-prev">
+                            <i class="fas fa-chevron-left"></i>
+                            Previous
+                        </a>
+                    {% endif %}
+                    
+                    <div class="pagination-numbers">
+                        {% for page_num in range(1, total_pages + 1) %}
+                            {% if page_num == current_page %}
+                                <span class="pagination-current">{{ page_num }}</span>
+                            {% elif page_num == 1 or page_num == total_pages or (page_num >= current_page - 2 and page_num <= current_page + 2) %}
+                                <a href="{{ url_for('blog', page=page_num, search=search, category=selected_category, tag=selected_tag, sort=sort_by) }}" 
+                                   class="pagination-btn">{{ page_num }}</a>
+                            {% elif page_num == current_page - 3 or page_num == current_page + 3 %}
+                                <span class="pagination-dots">...</span>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    {% if current_page < total_pages %}
+                        <a href="{{ url_for('blog', page=current_page+1, search=search, category=selected_category, tag=selected_tag, sort=sort_by) }}" 
+                           class="pagination-btn pagination-next">
+                            Next
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="sidebar">
+                {% if trending_posts %}
+                <div class="sidebar-widget">
+                    <h3><i class="fas fa-fire"></i> Trending Articles</h3>
+                    <div class="trending-posts">
+                        {% for post in trending_posts %}
+                        <div class="trending-item">
+                            <h4><a href="{{ url_for('post_detail', post_id=post.id) }}">{{ post.title }}</a></h4>
+                            <div class="trending-meta">
+                                <span class="views"><i class="fas fa-eye"></i> {{ post.views or 0 }}</span>
+                                <span class="reading-time"><i class="fas fa-clock"></i> {{ post.reading_time or 1 }} min</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="sidebar-widget">
+                    <h3><i class="fas fa-tags"></i> Popular Topics</h3>
+                    <div class="tag-cloud">
+                        {% for tag in all_tags[:15] %}
+                        <a href="{{ url_for('blog', tag=tag) }}" class="tag-cloud-item">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

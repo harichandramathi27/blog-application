@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "Hari",
+    "content": "my life is my rules .No one can control me ",
+    "category": "lifestyle",
+    "tags": [
+      "web"
+    ],
+    "author_id": 1,
+    "date": "2026-01-27 22:19:37",
+    "updated_at": "2026-01-27 22:19:37"
+  },
+  {
+    "id": 2,
+    "title": "harirenu",
+    "content": "i like and feel nature in good manner",
+    "category": "nature",
+    "tags": [
+      "nature feel"
+    ],
+    "author_id": 2,
+    "date": "2026-02-02 23:09:09",
+    "updated_at": "2026-02-02 23:09:09"
+  }
+]

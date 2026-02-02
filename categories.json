@@ -1,0 +1,27 @@
+[
+  {
+    "id": 1,
+    "name": "Technology",
+    "slug": "technology"
+  },
+  {
+    "id": 2,
+    "name": "Lifestyle",
+    "slug": "lifestyle"
+  },
+  {
+    "id": 3,
+    "name": "Travel",
+    "slug": "travel"
+  },
+  {
+    "id": 4,
+    "name": "Food",
+    "slug": "food"
+  },
+  {
+    "id": 5,
+    "name": "Nature",
+    "slug": "nature"
+  }
+]

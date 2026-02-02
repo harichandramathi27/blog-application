@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Admin Profile - TechInsight Pro{% endblock %}
+
+{% block content %}
+<div class="form-container">
+    <h2><i class="fas fa-user-shield"></i> Edit Admin Profile</h2>
+    
+    <form method="POST" class="post-form">
+        <div class="form-group">
+            <label for="email">Admin Email Address</label>
+            <input type="email" id="email" name="email" value="{{ user.email }}" required>
+            <small class="form-help">This email will be used for admin notifications and communications</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="bio">Admin Bio</label>
+            <textarea id="bio" name="bio" rows="4" placeholder="Describe your role and responsibilities...">{{ user.bio or 'Platform Administrator managing TechInsight Pro.' }}</textarea>
+            <small class="form-help">Share your administrative role, expertise, and platform management experience</small>
+        </div>
+        
+        <div class="form-group">
+            <label for="avatar">Admin Avatar Icon</label>
+            <select id="avatar" name="avatar">
+                <option value="fas fa-user-shield" {% if user.avatar == 'fas fa-user-shield' %}selected{% endif %}>Admin Shield (Default)</option>
+                <option value="fas fa-crown" {% if user.avatar == 'fas fa-crown' %}selected{% endif %}>Crown</option>
+                <option value="fas fa-user-tie" {% if user.avatar == 'fas fa-user-tie' %}selected{% endif %}>Executive</option>
+                <option value="fas fa-cog" {% if user.avatar == 'fas fa-cog' %}selected{% endif %}>Settings</option>
+                <option value="fas fa-tools" {% if user.avatar == 'fas fa-tools' %}selected{% endif %}>Tools</option>
+                <option value="fas fa-shield-alt" {% if user.avatar == 'fas fa-shield-alt' %}selected{% endif %}>Security Shield</option>
+                <option value="fas fa-key" {% if user.avatar == 'fas fa-key' %}selected{% endif %}>Key Master</option>
+                <option value="fas fa-chess-king" {% if user.avatar == 'fas fa-chess-king' %}selected{% endif %}>Strategic Leader</option>
+                <option value="fas fa-star" {% if user.avatar == 'fas fa-star' %}selected{% endif %}>Star Admin</option>
+                <option value="fas fa-gem" {% if user.avatar == 'fas fa-gem' %}selected{% endif %}>Premium Admin</option>
+            </select>
+            <small class="form-help">Choose an icon that represents your administrative role</small>
+        </div>
+        
+        <div class="admin-info-section">
+            <h3><i class="fas fa-info-circle"></i> Admin Information</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>Username:</strong> {{ user.username }}
+                </div>
+                <div class="info-item">
+                    <strong>Admin Since:</strong> {{ user.created_at[:10] if user.created_at else 'Unknown' }}
+                </div>
+                <div class="info-item">
+                    <strong>Last Login:</strong> {{ user.last_login[:16] if user.last_login else 'Never' }}
+                </div>
+                <div class="info-item">
+                    <strong>Role:</strong> Platform Administrator
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i>
+                Save Admin Profile
+            </button>
+            <a href="{{ url_for('admin_profile') }}" class="btn btn-outline">
+                <i class="fas fa-times"></i>
+                Cancel
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}
